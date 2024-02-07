@@ -10,7 +10,6 @@ RUN npm ci
 COPY . .
 
 RUN npx prisma generate
-
 RUN npm run build
 
 FROM node:18-alpine
@@ -21,6 +20,5 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/.env ./
 
-EXPOSE 8080
-
-CMD [  "npm", "run", "start:migrate:prod" ]
+EXPOSE 3000
+CMD [ "npm", "run", "start:migrate:prod" ]
