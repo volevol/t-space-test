@@ -27,7 +27,12 @@ export class BooksService {
     });
   }
 
-  async findMany({ skip, take, search }: FindManyBooksDto): Promise<Book[]> {
+  async findMany({
+    skip,
+    take,
+    search,
+    sort,
+  }: FindManyBooksDto): Promise<Book[]> {
     return this.prisma.book.findMany({
       skip,
       take,
@@ -39,7 +44,9 @@ export class BooksService {
           ],
         },
       }),
-      orderBy: { id: 'asc' },
+      ...(sort && {
+        orderBy: { [sort]: 'asc' },
+      }),
     });
   }
 

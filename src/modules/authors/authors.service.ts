@@ -43,6 +43,7 @@ export class AuthorsService {
     skip,
     take,
     search,
+    sort,
   }: FindManyAuthorsDto): Promise<Author[]> {
     return this.prisma.author.findMany({
       skip,
@@ -56,7 +57,9 @@ export class AuthorsService {
           ],
         },
       }),
-      orderBy: { id: 'asc' },
+      ...(sort && {
+        orderBy: { [sort]: 'asc' },
+      }),
     });
   }
 

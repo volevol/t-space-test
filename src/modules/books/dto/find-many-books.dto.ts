@@ -1,5 +1,9 @@
-import { IsOptional, IsString, Max, Min } from 'class-validator';
+import { IsEnum, IsOptional, IsString, Max, Min } from 'class-validator';
 
+export enum BooksSort {
+  NAME = 'name',
+  CONTENT = 'content',
+}
 export class FindManyBooksDto {
   @Min(0)
   skip = 0;
@@ -11,4 +15,8 @@ export class FindManyBooksDto {
   @IsOptional()
   @IsString()
   search?: string;
+
+  @IsOptional()
+  @IsEnum(BooksSort)
+  sort?: BooksSort;
 }

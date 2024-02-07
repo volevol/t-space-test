@@ -1,4 +1,11 @@
-import { IsOptional, IsString, Max, Min } from 'class-validator';
+import { IsEnum, IsOptional, IsString, Max, Min } from 'class-validator';
+
+export enum AuthorsSort {
+  NAME = 'name',
+  SURNAME = 'surname',
+  EMAIL = 'email',
+  PHONENUMBER = 'phoneNumber',
+}
 
 export class FindManyAuthorsDto {
   @Min(0)
@@ -11,4 +18,8 @@ export class FindManyAuthorsDto {
   @IsOptional()
   @IsString()
   search?: string;
+
+  @IsOptional()
+  @IsEnum(AuthorsSort)
+  sort?: AuthorsSort;
 }
