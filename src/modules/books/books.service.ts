@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { Book } from '@prisma/client';
-import { PrismaService } from 'src/prisma.service';
 import { FindManyBooksDto } from './dto/find-many-books.dto';
-import { containsSearch } from 'src/common/helpers';
+import { containsSearch } from '../../common/helpers';
+import { PrismaService } from '../../shared/prisma/prisma.service';
 
 @Injectable()
 export class BooksService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   create({ authorId: id, ...data }: CreateBookDto): Promise<Book> {
     return this.prisma.book.create({
