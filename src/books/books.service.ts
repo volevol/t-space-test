@@ -1,26 +1,58 @@
 import { Injectable } from '@nestjs/common';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
+import { Book } from '@prisma/client';
+import { PrismaService } from 'src/prisma.service';
+import { FindManyBooksDto } from './dto/find-many-books.dto';
+import { containsSearch } from 'src/common/helpers';
 
 @Injectable()
 export class BooksService {
-  create(createBookDto: CreateBookDto) {
-    return 'This action adds a new book';
+  constructor(private prisma: PrismaService) {}
+
+  create({ authorId: id, ...data }: CreateBookDto): Promise<Book> {
+    return this.prisma.book.create({
+      data: {
+        ...data,
+        author: {
+          connect: { id },
+        },
+      },
+    });
   }
 
-  findAll() {
-    return `This action returns all books`;
+  findMany({ skip, take, search }: FindManyBooksDto): Promise<Book[]> {
+    return this.prisma.book.findMany({
+      skip,
+      take,
+      ...(search && {
+        where: {
+          OR: [
+            { name: containsSearch(search) },
+            { content: containsSearch(search) },
+          ],
+        },
+      }),
+      orderBy: { id: 'asc' },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} book`;
+  findOne(id: number): Promise<Book | null> {
+    return this.prisma.book.findUnique({
+      where: { id },
+    });
   }
 
-  update(id: number, updateBookDto: UpdateBookDto) {
-    return `This action updates a #${id} book`;
+  update(id: number, data: UpdateBookDto): Promise<Book> {
+    return this.prisma.book.update({
+      where: { id },
+      data,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} book`;
+  remove(id: number): Promise<Book> {
+    return this.prisma.book.delete({
+      where: { id },
+    });
   }
 }
