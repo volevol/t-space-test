@@ -1,4 +1,13 @@
-import { IsEnum, IsOptional, IsString, Max, Min } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  ArrayNotEmpty,
+  IsEnum,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+  ValidateNested,
+} from 'class-validator';
 
 export enum BooksSort {
   NAME = 'name',
@@ -13,10 +22,20 @@ export class FindManyBooksDto {
   take = 10;
 
   @IsOptional()
-  @IsString()
-  search?: string;
+  @ArrayNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => FilterBookDto)
+  filters?: FilterBookDto[];
 
   @IsOptional()
   @IsEnum(BooksSort)
   sort?: BooksSort;
+}
+
+class FilterBookDto {
+  @IsEnum(BooksSort)
+  field: BooksSort;
+
+  @IsString()
+  value: string;
 }

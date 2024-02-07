@@ -30,18 +30,17 @@ export class BooksService {
   async findMany({
     skip,
     take,
-    search,
     sort,
+    filters,
   }: FindManyBooksDto): Promise<Book[]> {
     return this.prisma.book.findMany({
       skip,
       take,
-      ...(search && {
+      ...(filters && {
         where: {
-          OR: [
-            { name: containsSearch(search) },
-            { content: containsSearch(search) },
-          ],
+          OR: filters.map(({ field, value }) => ({
+            [field]: containsSearch(value),
+          })),
         },
       }),
       ...(sort && {

@@ -42,19 +42,17 @@ export class AuthorsService {
   async findMany({
     skip,
     take,
-    search,
     sort,
+    filters,
   }: FindManyAuthorsDto): Promise<Author[]> {
     return this.prisma.author.findMany({
       skip,
       take,
-      ...(search && {
+      ...(filters && {
         where: {
-          OR: [
-            { name: containsSearch(search) },
-            { surname: containsSearch(search) },
-            { email: containsSearch(search) },
-          ],
+          OR: filters.map(({ field, value }) => ({
+            [field]: containsSearch(value),
+          })),
         },
       }),
       ...(sort && {
