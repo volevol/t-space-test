@@ -1,20 +1,30 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { AuthorsService } from './authors.service';
 import { CreateAuthorDto } from './dto/create-author.dto';
 import { UpdateAuthorDto } from './dto/update-author.dto';
+import { FindManyAuthorsDto } from './dto/find-many-authors.dto';
+import { Author } from './entities/author.entity';
 
 @Controller('authors')
 export class AuthorsController {
   constructor(private readonly authorsService: AuthorsService) {}
 
   @Post()
-  create(@Body() createAuthorDto: CreateAuthorDto) {
-    return this.authorsService.create(createAuthorDto);
+  create(@Body() data: CreateAuthorDto) {
+    return this.authorsService.create(data);
   }
 
   @Get()
-  findAll() {
-    return this.authorsService.findAll();
+  findMany(@Body() dto: FindManyAuthorsDto): Promise<Author[]> {
+    return this.authorsService.findMany(dto);
   }
 
   @Get(':id')
@@ -23,8 +33,8 @@ export class AuthorsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthorDto: UpdateAuthorDto) {
-    return this.authorsService.update(+id, updateAuthorDto);
+  update(@Param('id') id: string, @Body() dto: UpdateAuthorDto) {
+    return this.authorsService.update(+id, dto);
   }
 
   @Delete(':id')
